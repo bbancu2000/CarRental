@@ -8,36 +8,33 @@ public class RentedCarHistoryItem {
 
     public User user;
     public Car car;
-    private LocalDate pickupDate;
+    public LocalDate pickupDate;
     private int daysToBeRented;
     public LocalDate returnDate;
-    private double rentPerDay;
-    public double totalRent;
-    boolean isCurrentlyRented;
-    public User salesman;
+    public long rentPerDay;
+    public long totalRent;
+    public String salesmanName;
 
-    public RentedCarHistoryItem(User user, Car car, LocalDate pickupDate, int daysToBeRented, double rentPerDay) {
+    public RentedCarHistoryItem(User user, Car car, LocalDate pickupDate, int daysToBeRented, long rentPerDay) {
         this.user = user;
         this.car = car;
         this.pickupDate = pickupDate;
         this.daysToBeRented = daysToBeRented;
-        this.returnDate = pickupDate.plusDays(daysToBeRented);
+        this.returnDate = pickupDate.plusDays(daysToBeRented-1);
         this.rentPerDay = rentPerDay;
         this.totalRent = rentPerDay*daysToBeRented;
-        this.isCurrentlyRented = true;
     }
 
     @Override
     public String toString() {
-        return "RentedCarHistoryItem{" +
-                "user=" + user +
-                "\n car=" + car +
-                "\n pickupDate=" + pickupDate +
-                ", daysToBeRented=" + daysToBeRented +
-                ", returnDate=" + returnDate +
-                ", rentPerDay=" + rentPerDay +
-                ", totalRent=" + totalRent +
-                ", isCurrentlyRented=" + isCurrentlyRented +
-                '}';
+        return "[ RentedCarHistoryItem ]\n" +
+                "[" + user +
+                " ]\n" + car +
+                " ] \n[ PickupDate: " + pickupDate +
+                ", ReturnDate: " + returnDate +
+                ", DaysToBeRented:" + daysToBeRented +
+                ", RentPerDay=" + rentPerDay +
+                ", TotalRent=" + totalRent +
+                " ]";
     }
 }

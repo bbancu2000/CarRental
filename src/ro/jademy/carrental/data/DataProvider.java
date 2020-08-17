@@ -2,10 +2,15 @@ package ro.jademy.carrental.data;
 
 import ro.jademy.carrental.models.cars.Car;
 import ro.jademy.carrental.models.cars.bmw.Serie3;
+import ro.jademy.carrental.models.cars.bmw.Serie5;
+import ro.jademy.carrental.models.cars.bmw.Serie7;
+import ro.jademy.carrental.models.cars.dacia.Duster;
+import ro.jademy.carrental.models.cars.dacia.Lodgy;
 import ro.jademy.carrental.models.cars.dacia.Logan;
 import ro.jademy.carrental.models.Customer;
 import ro.jademy.carrental.models.Salesman;
 import ro.jademy.carrental.models.User;
+import ro.jademy.carrental.models.cars.dacia.Sandero;
 
 import java.util.ArrayList;
 
@@ -14,15 +19,28 @@ public class DataProvider {
     public static ArrayList<Car> getCarList() {
         ArrayList<Car> carList = new ArrayList<>();
 
-        carList.add(new Logan(10, "Laureat", "Sedan", 2009, 1400, "Gasoline", "Manual", 4, "White", "ABC", 100));
-        carList.add(new Logan(11, "Clima", "Sedan", 2007, 1600, "GPL", "Manual", 4, "Blue", "ABC", 110));
-        carList.add(new Logan(12, "MCV", "Break", 2008, 1500, "Diesel", "Manual", 5, "Red", "ABC", 120));
+        carList.add(new Logan(1, "Acces", "Sedan", 2018, 1400, "Gasoline", "Manual", 4, "White", "ABC", 100));
+        carList.add(new Logan(2, "Ambiance", "Break", 2019, 1600, "GPL", "Manual", 4, "Blue", "ABCD", 110));
+        carList.add(new Duster(3, "Essential", "SUV", 2015, 1500, "Diesel", "Manual", 5, "Red", "ABCE", 120));
+        carList.add(new Duster(4, "Comfort", "SUV", 2017, 1500, "Gasoline", "Manual", 5, "Red", "ABCEF", 120));
+        carList.add(new Sandero(5, "Acces", "Hatchback", 2018, 1500, "Diesel", "Manual", 5, "Red", "ABCEFG", 120));
+        carList.add(new Sandero(6, "Acces", "Hatchback", 2019, 1000, "Gasoline", "Manual", 5, "Red", "ABCEFGH", 120));
+        carList.add(new Sandero(7, "Ambiance", "Hatchback", 2017, 1000, "GPL", "Manual", 5, "Red", "ABCZ", 130));
+        carList.add(new Lodgy(8, "Ambiance", "MPV", 2017, 1200, "Diesel", "Manual", 5, "Red", "ABCX", 125));
+        carList.add(new Lodgy(9, "Laureate", "MPV", 2019, 1500, "Diesel", "Manual", 5, "Red", "ABCG", 135));
 
-        carList.add(new Serie3(13, "E90", "Sedan", 2006, 2000, "Gasoline", "Manual", 4, "White", "ABC", 100));
-        carList.add(new Serie3(14, "F30", "Sedan", 2014, 1800, "Diesel", "Manual", 4, "Blue",  "ABC", 110));
-        carList.add(new Serie3(15, "G20", "Break", 2018, 1600, "Diesel", "Manual",5, "Red",  "ABSDL", 120));
 
-        carList.get(2).isRented = true;
+        carList.add(new Serie3(10, "E90", "Sedan", 2006, 2000, "Gasoline", "Manual", 4, "White", "ABCZX", 100));
+        carList.add(new Serie3(11, "F30", "Sedan", 2014, 1800, "Diesel", "Manual", 4, "Blue",  "ABCZ1", 110));
+        carList.add(new Serie3(12, "G20", "Break", 2018, 1600, "Diesel", "Manual",5, "Red",  "ABSDLZ2", 120));
+        carList.add(new Serie5(13, "520i", "Sedan", 2020, 2000, "Gasoline", "Manual",4, "Red",  "ABSDLZ3", 120));
+        carList.add(new Serie5(14, "530d xDrive M", "Sedan", 2020, 3000, "Diesel", "Automatic",4, "Red",  "ABSDLZ4", 180));
+        carList.add(new Serie5(15, "530e xDrive M", "Break", 2019, 2000, "Hybrid", "Automatic",5, "Red",  "ABSDLZ5", 120));
+        carList.add(new Serie7(16, "730d", "Sedan", 2020, 3000, "Diesel", "Automatic",4, "Red",  "ABSDLZ6", 200));
+        carList.add(new Serie7(17, "740d xDrive", "Sedan", 2019, 4000, "Diesel", "Automatic",4, "Red",  "ABSDLZ7", 220));
+        carList.add(new Serie7(18, "750i XDrive", "Sedan", 2018, 5000, "Gasoline", "Automatic",4, "Red",  "ABSDLZ8", 250));
+
+
 
 
 

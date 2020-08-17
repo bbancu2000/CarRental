@@ -19,10 +19,11 @@ public class Customer extends User {
     public int yearsOfDriving;
 
     public int daysRented;
+    public double rentalCoeff;
 
 
-    ArrayList<RentedCarHistoryItem> currentRentals = new ArrayList<>();
-    ArrayList<RentedCarHistoryItem> historyRentals = new ArrayList<>();
+    public ArrayList<RentedCarHistoryItem> currentRentals = new ArrayList<>();
+    public ArrayList<RentedCarHistoryItem> historyRentals = new ArrayList<>();
 
 
     public double getRentalCoeff() {

@@ -23,7 +23,7 @@ public class Car {
     public String color;
 
     public final String VIN;
-    public int basePrice;
+    public long basePrice;
 
     public boolean isRented;
 
@@ -31,7 +31,7 @@ public class Car {
     // Q: how can we better protect the car data?
 
 
-    public Car(int id, String make, String model, String variant, String carType, int year, int engine, String fuelType, String transmissionType, Integer doorNumber, String color, String VIN, int basePrice) {
+    public Car(int id, String make, String model, String variant, String carType, int year, int engine, String fuelType, String transmissionType, Integer doorNumber, String color, String VIN, long basePrice) {
         this.id = id;
         this.make = make;
         this.model = model;
@@ -49,20 +49,21 @@ public class Car {
 
     @Override
     public String toString() {
-        return "Car{" +
-                "make='" + make + '\'' +
-                ", model='" + model + '\'' +
-                ", variant='" + variant + '\'' +
-                ", carType='" + carType + '\'' +
-                ", year=" + year +
-                ", engine=" + engine +
-                ", fuelType='" + fuelType + '\'' +
-                ", transmissionType='" + transmissionType + '\'' +
-                ", doorNumber=" + doorNumber +
-                ", color='" + color + '\'' +
-                ", basePrice=" + basePrice +
-                ", isRented=" + isRented +
-                '}';
+        return "[ Car: "  +
+                " id: " + id + '\'' +
+                ", make: " + make + '\'' +
+                ", model: " + model + '\'' +
+                ", variant: " + variant + '\'' +
+                ", carType: " + carType + '\'' +
+                ", year: " + year +
+                ", engine: " + engine +
+                ", fuelType: " + fuelType + '\'' +
+                ", transmissionType: " + transmissionType + '\'' +
+                ", doorNumber: " + doorNumber +
+                ", color: " + color + '\'' +
+                ", basePrice: " + basePrice +
+                ", isRented: " + isRented +
+                " ]";
     }
 
 
