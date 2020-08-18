@@ -1,15 +1,14 @@
 package ro.jademy.carrental.services;
 
-import ro.jademy.carrental.models.Customer;
+import ro.jademy.carrental.models.Client;
 import ro.jademy.carrental.models.RentedCarHistoryItem;
-import ro.jademy.carrental.models.Salesman;
+import ro.jademy.carrental.models.Shop;
 import ro.jademy.carrental.models.User;
 import ro.jademy.carrental.models.cars.Car;
 
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
@@ -19,7 +18,7 @@ public class RentingService {
     Scanner sc = new Scanner(System.in);
 
 
-    public void rentSubMenu(Car car, User user, int maximumRentalDaysTotal, int maximumRentalDaysInAdvance, List<RentedCarHistoryItem> rentedCarList, List<RentedCarHistoryItem> pendingTransaction) {
+    public long rentSubMenu(long shopBalance, Car car, User user, int maximumRentalDaysTotal, int maximumRentalDaysInAdvance, List<RentedCarHistoryItem> rentedCarList, List<RentedCarHistoryItem> pendingTransaction) {
 
         loop:
         while (car != null) {
@@ -118,12 +117,14 @@ public class RentingService {
                     }
                 } while (!validNrDays);
 
-                long finalPrice = (long) (((Customer) user).rentalCoeff * car.basePrice);
-                createTransaction(car, user, userStartDate, choiceNrDaysToRentInt, finalPrice, pendingTransaction);
+                long finalPrice = (long) (((Client) user).rentalCoeff * car.basePrice);
+
+                shopBalance = createTransaction(shopBalance ,car, user, userStartDate, choiceNrDaysToRentInt, finalPrice, pendingTransaction);
                 car = null;
                 break loop;
             }
         }
+        return shopBalance;
     }
 
 
@@ -151,33 +152,48 @@ public class RentingService {
     }
 
 
-    public void createTransaction(Car car, User user, LocalDate userStartDate, int nrOfDays, long rentPerDay, List<RentedCarHistoryItem> pendingTransaction) {
+    public long createTransaction(long shopBalance, Car car, User user, LocalDate userStartDate, int nrOfDays, long rentPerDay, List<RentedCarHistoryItem> pendingTransaction) {
+        long totalRentCost = nrOfDays * rentPerDay;
+        System.out.println("You have current balance: " + ((Client) user).balance);
+        System.out.println("The price of this car is: " + rentPerDay + " per day.");
+        System.out.println("To rent this car for: " + nrOfDays + " days, Total-Cost: " + totalRentCost);
         System.out.println("Are you sure you want to make this transaction ?  [ Type Y/N ]");
 
         String choice = sc.nextLine();
         if (choice.equalsIgnoreCase("y")) {
-            RentedCarHistoryItem rentedCar = new RentedCarHistoryItem(user, car, userStartDate, nrOfDays, rentPerDay);
-            pendingTransaction.add(rentedCar);
-            System.out.println("Created transaction, ");
+            if (((Client) user).balance >= totalRentCost) {
+                //add new RentedCarHistoryitem into PENDING-TRANSACTION list ;
+                pendingTransaction.add(new RentedCarHistoryItem(user, car, userStartDate, nrOfDays, rentPerDay));
+                // substracting the totalRentCost from the user
+                ((Client) user).balance -= totalRentCost;
+                // adding the substracted ammount to the shop
+                shopBalance += totalRentCost;
+                System.out.println("Created transaction. ");
+            } else {
+                System.out.println("You can't rent this car !! Not enough balance.");
+            }
+
 
         } else if (choice.equalsIgnoreCase("n")) {
             // TODO do-while for Y/N proofing
             //empty code block
         }
+        return shopBalance;
     }
 
 
-    public void confirmPendingRentals(User currentUser, List<RentedCarHistoryItem> rentedCarList, List<RentedCarHistoryItem> pendingTransaction) {
+
+
+    public long confirmPendingRentals(long shopBalance, User currentSalesMan, List<RentedCarHistoryItem> rentedCarList, List<RentedCarHistoryItem> pendingTransaction) {
         RentedCarHistoryItem selectedCarItem = null;
         boolean isValidInput = false;
         int choiceInt = -1;
 
-        //TODO maybe make this PRINT look better?
         for (int i = 0; i < pendingTransaction.size(); i++) {
             System.out.println(i + ". " + pendingTransaction.get(i));
         }
 
-        if(pendingTransaction.isEmpty()) {
+        if (pendingTransaction.isEmpty()) {
             System.out.println();
             System.out.println("No current PENDING RENTALS !! ");
         } else {
@@ -203,44 +219,95 @@ public class RentingService {
                 }
             } while (!isValidInput);
 
-            // TODO maybe a Y/N confirmation ?
-
-
             if (selectedCarItem != null) {
-                // adding salesman username to the transaction
-                selectedCarItem.salesmanName = currentUser.userName;
-                // modify car to be rented
-                selectedCarItem.car.isRented = true;
-                // adding CarItem to the active rentedCarList
-                rentedCarList.add(selectedCarItem);
-                // adding Caritem to the current rentals of the user;
-                ((Customer) selectedCarItem.user).currentRentals.add(selectedCarItem);
-                // removing CarItem from pendingTransactions
-                pendingTransaction.remove(selectedCarItem);
-
-                System.out.println("Transaction confirmed , car was given to the customer.");
+                shopBalance = confirmPendingRentalsSubMenu(shopBalance,currentSalesMan, selectedCarItem, rentedCarList, pendingTransaction);
             }
         }
+        return shopBalance;
+    }
+
+    public long confirmPendingRentalsSubMenu(long shopBalance, User currentUser, RentedCarHistoryItem selectedCarItem, List<RentedCarHistoryItem> rentedCarList, List<RentedCarHistoryItem> pendingTransaction) {
+        System.out.println(" [PendingRentals - SubMenu] Select action: ");
+        System.out.println("1. Complete pending rental");
+        System.out.println("2. Delete pending rental (+money back to customer)");
+        System.out.println("N. Return to Main Menu");
+        String choice = "";
+        boolean isValidInput = false;
+
+        loop:
+        do {
+            choice = sc.nextLine().toLowerCase();
+            switch (choice) {
+
+                case "1":
+                    // Complete pending rental
+
+                    // adding salesman username to the transaction
+                    selectedCarItem.salesmanName = currentUser.userName;
+                    // adding nrOfRentDays to the user stats
+                    ((Client) selectedCarItem.user).daysRented += selectedCarItem.daysToBeRented;
+                    // modify car to be rented
+                    selectedCarItem.car.isRented = true;
+                    // adding CarItem to the active rentedCarList
+                    rentedCarList.add(selectedCarItem);
+                    // adding Caritem to the current rentals of the user;
+                    ((Client) selectedCarItem.user).currentRentals.add(selectedCarItem);
+                    // removing CarItem from pendingTransactions
+                    pendingTransaction.remove(selectedCarItem);
+
+                    System.out.println("Transaction confirmed , car was given to the customer.");
+                    isValidInput = true;
+                    break;
+                case "2":
+                    // DELETE pending rental
+                    if(shopBalance >= selectedCarItem.totalRent) {
+                        //substracting money from the shopBalance
+                        shopBalance -= selectedCarItem.totalRent;
+                        // returning the money back to the
+                        ((Client) selectedCarItem.user).balance +=  selectedCarItem.totalRent;
+                        // removing CarItem from pendingTransactions
+                        pendingTransaction.remove(selectedCarItem);
+                    } else {
+                        System.out.println("Couldn't remove the rental at this moment. Please try again later.");
+                    }
 
 
 
 
+
+                            System.out.println(" Pending rental deleted succesfuly. ");
+
+                    isValidInput = true;
+                    break;
+                case "n":
+                    break loop;
+
+                default:
+                    System.out.println("Invalid input for Pending-Rentals SubMenu");
+                    break;
+            }
+
+        } while (!isValidInput);
+
+        return shopBalance;
     }
 
 
-    public void returnRental(List<RentedCarHistoryItem> rentedCarList, List<RentedCarHistoryItem> pendingTransaction, List<RentedCarHistoryItem> historyRentedCarList ) {
+
+
+    public void returnRental(List<RentedCarHistoryItem> rentedCarList, List<RentedCarHistoryItem> pendingTransaction, List<RentedCarHistoryItem> historyRentedCarList) {
         // TODO maybe rented AND pending ?
         User targetUser = null;
         int choiceInt = -1;
         RentedCarHistoryItem selectedCarItem = null;
         boolean isValidInt = false;
 
-        if(rentedCarList.isEmpty()) {
+        if (rentedCarList.isEmpty()) {
             System.out.println("Return Rental service has an EMPTY rentedCarList");
         } else {
             // printing with INDEX
-            for (int i = 0; i < rentedCarList.size() ; i++) {
-                System.out.print(i+ ". " + rentedCarList.get(i));
+            for (int i = 0; i < rentedCarList.size(); i++) {
+                System.out.print(i + ". " + rentedCarList.get(i));
                 System.out.println();
             }
 
@@ -273,14 +340,14 @@ public class RentingService {
                 selectedCarItem.car.isRented = false;
 
                 // adding the car to USER's  - HISTORY RENTALS
-                ((Customer) targetUser).historyRentals.add(selectedCarItem);
+                ((Client) targetUser).historyRentals.add(selectedCarItem);
 
                 // adding the car to history RENTALS
                 // TODO CHECK if work
                 historyRentedCarList.add(selectedCarItem);
 
                 // removing the car from USER's - CURRENT RENTALS
-                ((Customer) targetUser).currentRentals.remove(selectedCarItem);
+                ((Client) targetUser).currentRentals.remove(selectedCarItem);
                 // removing the car from the RENTED-CAR-LIST from SHOP.
                 rentedCarList.remove(selectedCarItem);
 
@@ -289,8 +356,6 @@ public class RentingService {
                 System.out.println("Car succesfully returned to the shop !!");
             }
         }
-
-
 
 
     }

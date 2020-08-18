@@ -7,7 +7,7 @@ import ro.jademy.carrental.models.cars.bmw.Serie7;
 import ro.jademy.carrental.models.cars.dacia.Duster;
 import ro.jademy.carrental.models.cars.dacia.Lodgy;
 import ro.jademy.carrental.models.cars.dacia.Logan;
-import ro.jademy.carrental.models.Customer;
+import ro.jademy.carrental.models.Client;
 import ro.jademy.carrental.models.Salesman;
 import ro.jademy.carrental.models.User;
 import ro.jademy.carrental.models.cars.dacia.Sandero;
@@ -52,13 +52,17 @@ public class DataProvider {
     public static ArrayList<User> getUserList() {
         ArrayList<User> userList = new ArrayList<>();
 
-        userList.add(new Customer("floricica123", "Floricica", "Dansatoarea", "floricele", "Female", 25, 1, 1, 0));
-        userList.add(new Customer("daniel", "Daniel", "DeLaPaza", "bgs","Male", 30, 5, 4, 0));
+        userList.add(new Client("floricica123", "Floricica", "Dansatoarea", "floricele", "Female", "1990-05-01", "2010-01-01", 1, 0, 10000));
+        userList.add(new Client("daniel", "Daniel", "DeLaPaza", "bgs","Male", "1991-06-20", "2015-05-01", 4, 0, 10000));
         userList.add(new Salesman("bbancu", "Bogdan", "Bancu", "1234"));
 
 
 
         return userList;
+    }
+
+    public static long getShopBalance() {
+        return 0;
     }
 
 

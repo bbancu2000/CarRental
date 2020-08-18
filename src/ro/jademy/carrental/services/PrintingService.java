@@ -1,6 +1,6 @@
 package ro.jademy.carrental.services;
 
-import ro.jademy.carrental.models.Customer;
+import ro.jademy.carrental.models.Client;
 import ro.jademy.carrental.models.RentedCarHistoryItem;
 import ro.jademy.carrental.models.Salesman;
 import ro.jademy.carrental.models.User;
@@ -27,6 +27,7 @@ public class PrintingService {
     int maxPaddingByDoorNumber;
     int maxPaddingByColor;
     int maxPaddingIsRented;
+    int maxPaddingByID;
 
     public PrintingService(List<Car> allCarList) {
         this.allCarList = allCarList;
@@ -43,6 +44,7 @@ public class PrintingService {
         this.maxPaddingByDoorNumber = getMaxPaddingByDoorNumber();
         this.maxPaddingByColor = getMaxPaddingByColor();
         this.maxPaddingIsRented = getMaxPaddingIsRented();
+        this.maxPaddingByID = getMaxPaddingByID();
 
     }
 
@@ -160,6 +162,20 @@ public class PrintingService {
         return counter;
     }
 
+    public int getMaxPaddingByID() {
+        int counter = 2;
+        for (Car car : allCarList) {
+            if (car.id > 99) {
+                counter = 3;
+            } else if (car.id > 999) {
+                counter = 4;
+            }
+        }
+
+        return counter;
+    }
+
+
     //////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////
@@ -173,6 +189,7 @@ public class PrintingService {
 
     public void headerSingleCar() {
 
+        System.out.printf("%" + maxPaddingByID + "s" + middleBar, "ID");
         System.out.printf("%" + maxPaddingByBasePrice + "s" + middleBar, "PRICE");
         System.out.printf("%" + maxPaddingByMake + "s" + middleBar, "MAKE");
         System.out.printf("%" + maxPaddingByModel + "s" + middleBar, "MODEL");
@@ -203,14 +220,16 @@ public class PrintingService {
 
     public void printCar(Car car, User user) {
         if(car != null & user != null) {
-            if (user instanceof Customer) {
-                long finalPrice = (long) (car.basePrice * ((Customer) user).rentalCoeff);
+            System.out.printf("%" + maxPaddingByID + "d" + middleBar, car.id);
+            if (user instanceof Client) {
+                long finalPrice = (long) (car.basePrice * ((Client) user).rentalCoeff);
                 System.out.printf("%" + maxPaddingByBasePrice + "d" + middleBar, finalPrice);
             } else {
                 if (user instanceof Salesman) {
                     System.out.printf("%" + maxPaddingByBasePrice + "d" + middleBar, car.basePrice);
                 }
             }
+
             System.out.printf("%" + maxPaddingByMake + "s" + middleBar, car.make);
             System.out.printf("%" + maxPaddingByModel + "s" + middleBar, car.model);
             System.out.printf("%" + maxPaddingByVariant + "s" + middleBar, car.variant);

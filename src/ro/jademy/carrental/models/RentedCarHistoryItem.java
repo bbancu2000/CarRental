@@ -9,7 +9,7 @@ public class RentedCarHistoryItem {
     public User user;
     public Car car;
     public LocalDate pickupDate;
-    private int daysToBeRented;
+    public int daysToBeRented;
     public LocalDate returnDate;
     public long rentPerDay;
     public long totalRent;

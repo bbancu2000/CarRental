@@ -16,11 +16,11 @@ public abstract class User {
 
     @Override
     public String toString() {
-        return "User{" +
+        return " User: " +
                 "userName='" + userName + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
-                ", password='" + password + '\'' +
-                '}';
+                ", password='" + password + '\''
+                ;
     }
 }

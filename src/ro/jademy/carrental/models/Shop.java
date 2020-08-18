@@ -14,6 +14,7 @@ public class Shop {
     private Scanner sc = new Scanner(System.in);
     private int maximumRentalDays = 30;
     public int maximumRentalDaysInFuture = 7;
+    public long shopBalance;
 
     private ArrayList<User> userList = new ArrayList<>();
     public ArrayList<Car> allCarsList = new ArrayList<>();
@@ -37,8 +38,9 @@ public class Shop {
             if (currentUser == null) {
                 login();
             }
-            showMenu();
-
+            if(!showMenu()) {
+                break;
+            }
         } while (!isExit);
     }
 
@@ -47,6 +49,7 @@ public class Shop {
         allCarsList = DataProvider.getCarList();
         //future : getRentedCarList from DB;
         printingService = new PrintingService(allCarsList);
+        shopBalance = DataProvider.getShopBalance();
     }
 
 
@@ -71,22 +74,29 @@ public class Shop {
             }
         } while (!loginSuccess);
 
-        if (currentUser instanceof Customer) {
-            ((Customer) currentUser).rentalCoeff = ((Customer) currentUser).getRentalCoeff();
+        if (currentUser instanceof Client) {
+            // calculate user stats at the start of the program
+            ((Client) currentUser).calculateRentalCoeff();
+            //calculate age (it automatically attributes the calculatedAge to the AGE attrib of Client)
+            ((Client) currentUser).setCalculatedAge();
+            //calculate yearsOfDriving ((it automatically attributes the calculatedDT to the DT attrib of Client)
+            ((Client) currentUser).setCalculatedDrivingTime();
         }
 
 
     }
 
 
-    public void showMenu() {
+    public boolean showMenu() {
         String temp;
         Car currentCar = null;
+        System.out.println("Shop balance: " + shopBalance);
 
-        if (currentUser instanceof Customer) {
+        if (currentUser instanceof Client) {
             System.out.println(" -----------------------------------------------");
             System.out.println("|       Welcome to the BANCU Car Rental Shop    |");
-            System.out.println("|                  ( Customer )                 |");
+            System.out.println("|                  ( Client )                   |");
+            System.out.println("| User balance: " + ((Client) currentUser).balance);
             System.out.println(" -----------------------------------------------");
             System.out.println();
             System.out.println("                    MAIN MENU                   ");
@@ -104,7 +114,7 @@ public class Shop {
                     printingService.printCarList(getAllCarList(), currentUser);
                     currentCar = selectCarFromList(getAllCarList());
                     printingService.printSingleCar(currentCar, currentUser);
-                    rentingService.rentSubMenu(currentCar, currentUser, maximumRentalDays, maximumRentalDaysInFuture, rentedCarList, pendingTransactions);
+                    shopBalance =    rentingService.rentSubMenu(shopBalance,currentCar, currentUser, maximumRentalDays, maximumRentalDaysInFuture, rentedCarList, pendingTransactions);
                     break;
 
                 case "2":
@@ -112,7 +122,7 @@ public class Shop {
                     printingService.printCarList(getAvailableCars(), currentUser);
                     currentCar = selectCarFromList(getAvailableCars());
                     printingService.printSingleCar(currentCar, currentUser);
-                    rentingService.rentSubMenu(currentCar, currentUser, maximumRentalDays, maximumRentalDaysInFuture, rentedCarList, pendingTransactions);
+                    shopBalance = rentingService.rentSubMenu(shopBalance,currentCar, currentUser, maximumRentalDays, maximumRentalDaysInFuture, rentedCarList, pendingTransactions);
                     break;
 
                 case "3":
@@ -135,7 +145,8 @@ public class Shop {
 
                 case "9":
                     // EXIT?
-                    break;
+                    return false;
+
 
                 default :
                     System.out.println("Invalid index for Main Menu");
@@ -168,7 +179,7 @@ public class Shop {
                     printingService.printCarList(getAllCarList(), currentUser);
                     currentCar = selectCarFromList(getAllCarList());
                     printingService.printSingleCar(currentCar, currentUser);
-                    rentingService.rentSubMenu(currentCar, currentUser, maximumRentalDays, maximumRentalDaysInFuture, rentedCarList, pendingTransactions);
+                    shopBalance =  rentingService.rentSubMenu(shopBalance,currentCar, currentUser, maximumRentalDays, maximumRentalDaysInFuture, rentedCarList, pendingTransactions);
                     break;
 
                 case "2":
@@ -176,7 +187,7 @@ public class Shop {
                     printingService.printCarList(getAvailableCars(), currentUser);
                     currentCar = selectCarFromList(getAvailableCars());
                     printingService.printSingleCar(currentCar, currentUser);
-                    rentingService.rentSubMenu(currentCar, currentUser, maximumRentalDays, maximumRentalDaysInFuture, rentedCarList, pendingTransactions);
+                    shopBalance =  rentingService.rentSubMenu(shopBalance,currentCar, currentUser, maximumRentalDays, maximumRentalDaysInFuture, rentedCarList, pendingTransactions);
                     break;
 
                 case "3":
@@ -198,7 +209,7 @@ public class Shop {
 
                 case "5":
                     // SHOW PENDING RENTALS
-                    rentingService.confirmPendingRentals(currentUser, rentedCarList, pendingTransactions);
+                    shopBalance = rentingService.confirmPendingRentals(shopBalance,currentUser, rentedCarList, pendingTransactions);
                     break;
 
                 case "6":
@@ -223,7 +234,8 @@ public class Shop {
 
                 case "9":
                     // EXIT?
-                    break;
+                    return false;
+
 
                 default :
                     System.out.println("Invalid index for Main Menu");
@@ -233,7 +245,7 @@ public class Shop {
 
 
 
-
+    return true;
     }
 
 
@@ -473,7 +485,7 @@ public class Shop {
         currentCar = selectCarFromList(carList);
         if (currentCar != null) {
             printingService.printSingleCar(currentCar, currentUser);
-            rentingService.rentSubMenu(currentCar, currentUser, maximumRentalDays, maximumRentalDaysInFuture, rentedCarList, pendingTransactions);
+           shopBalance = rentingService.rentSubMenu(shopBalance,currentCar, currentUser, maximumRentalDays, maximumRentalDaysInFuture, rentedCarList, pendingTransactions);
         }
     }
 
@@ -488,7 +500,7 @@ public class Shop {
             return null;
         } else {
             do {
-                System.out.println("Please select the index:      [or Type S for Search, or Type N for Main Menu ]");
+                System.out.println("Please select the INDEX:      [or Type S for Search, or Type N for Main Menu ]");
                 String choice = sc.nextLine();
                 if (choice.equalsIgnoreCase("s")) {
                     return showSearchMenuOptions(carList);

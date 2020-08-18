@@ -1,6 +1,6 @@
 package ro.jademy.carrental.services;
 
-import ro.jademy.carrental.models.Customer;
+import ro.jademy.carrental.models.Client;
 import ro.jademy.carrental.models.Salesman;
 import ro.jademy.carrental.models.User;
 import ro.jademy.carrental.models.cars.Car;
@@ -17,8 +17,8 @@ public class FilterService {
 
     public List<Car> searchByPrice(User user, List<Car> carList, int minPrice, int maxPrice) {
         List<Car> tempCarList = new ArrayList<>();
-        if(user instanceof Customer) {
-            double rentalCoeff = ((Customer)user).rentalCoeff;
+        if(user instanceof Client) {
+            double rentalCoeff = ((Client)user).rentalCoeff;
             for (Car car : carList) {
                 // +1 , -1 is margin for double to long transform.
                 if ((car.basePrice*rentalCoeff + 1) >= minPrice

@@ -14,7 +14,7 @@ public class StatsService {
     Scanner sc = new Scanner(System.in);
 
 
-    public void checkIncomeMenu(List<RentedCarHistoryItem> rentedCarList, List<RentedCarHistoryItem> pendingTransactions  ,List<RentedCarHistoryItem> historyRentedCarList) {
+    public void checkIncomeMenu(List<RentedCarHistoryItem> rentedCarList, List<RentedCarHistoryItem> pendingTransactions, List<RentedCarHistoryItem> historyRentedCarList) {
 
         LocalDate startDate;
         LocalDate endDate;
@@ -51,7 +51,7 @@ public class StatsService {
                     timeFrame = Operations.getDateListFromLocalDates(startDate, endDate);
 
                     for (LocalDate day : timeFrame) {
-                        result = getAllIncomePerDay(rentedCarList, pendingTransactions,historyRentedCarList, day);
+                        result = getAllIncomePerDay(rentedCarList, pendingTransactions, historyRentedCarList, day);
                         System.out.println(day.toString() + " : " + result);
 
                     }
@@ -87,7 +87,7 @@ public class StatsService {
 
     }
 
-    public long getAllIncomePerDay(List<RentedCarHistoryItem> rentedCarList, List<RentedCarHistoryItem> pendingTransactions, List<RentedCarHistoryItem> historyRentedCarList , LocalDate date) {
+    public long getAllIncomePerDay(List<RentedCarHistoryItem> rentedCarList, List<RentedCarHistoryItem> pendingTransactions, List<RentedCarHistoryItem> historyRentedCarList, LocalDate date) {
         List<LocalDate> dateList = new ArrayList<>();
         LocalDate start;
         LocalDate end;
@@ -134,10 +134,10 @@ public class StatsService {
     }
 
 
-    public boolean StatisticsMenu(List<Car> allCarList,
-                                  List<RentedCarHistoryItem> pendingTransactions,
-                                  List<RentedCarHistoryItem> rentedCarList,
-                                  List<RentedCarHistoryItem> historyRentedCarList) {
+    public void StatisticsMenu(List<Car> allCarList,
+                               List<RentedCarHistoryItem> pendingTransactions,
+                               List<RentedCarHistoryItem> rentedCarList,
+                               List<RentedCarHistoryItem> historyRentedCarList) {
         System.out.println(" -- Statistics Sub-Menu -- ");
         System.out.println("1. Car: All stats ");
         System.out.println("2. // ");
@@ -150,34 +150,27 @@ public class StatsService {
         String choice = "";
         Car currentCar = null;
         int result = 0;
-        long income =0 ;
+        long income = 0;
 
         loop:
         do {
             choice = sc.nextLine().toLowerCase();
 
             switch (choice) {
-
                 case "1":
                     //TODO
                     //Car: STATS by
-
                     currentCar = Operations.getCarByIDorVIN(allCarList);
-                    if(currentCar != null) {
+                    if (currentCar != null) {
                         System.out.println(currentCar);
                         result = howManyTimesCarWasRented(currentCar, pendingTransactions, rentedCarList, historyRentedCarList);
                         System.out.println("Car was rented: " + result + " times.");
-                        result = howManyDaysCarWasRented(currentCar,pendingTransactions,rentedCarList,historyRentedCarList);
-                        System.out.println("Car was rented for a total of:" + result + " days.");
-                       income = howMuchIncomeCarMade(currentCar, pendingTransactions, rentedCarList, historyRentedCarList);
-                        System.out.println("Car made a total of :" + income + " income.");
+                        result = howManyDaysCarWasRented(currentCar, pendingTransactions, rentedCarList, historyRentedCarList);
+                        System.out.println("Car was rented for a total of: " + result + " days.");
+                        income = howMuchIncomeCarMade(currentCar, pendingTransactions, rentedCarList, historyRentedCarList);
+                        System.out.println("Car made a total of: " + income + " income.");
                     }
-
-
-
-
                     break loop;
-
 
                 case "2":
 
@@ -198,7 +191,7 @@ public class StatsService {
 
         } while (!isValidInput);
 
-        return true;
+
     }
 
 

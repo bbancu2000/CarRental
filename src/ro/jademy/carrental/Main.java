@@ -7,8 +7,8 @@ public class Main {
     public static void main(String[] args) {
         // Q: this is the main entry point of our program. What should we do here?
 
-        Shop shop = new Shop();
-        shop.start();
+        Shop shop1 = new Shop();
+        shop1.start();
 
 
 

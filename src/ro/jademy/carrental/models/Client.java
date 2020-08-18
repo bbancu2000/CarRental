@@ -1,32 +1,49 @@
 package ro.jademy.carrental.models;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 
-public class Customer extends User {
-
-    public Customer(String userName, String firstName, String lastName, String password, String gender, int age, int nrOfAccidents, int yearsOfDriving, int daysRented) {
-        super(userName, firstName, lastName, password);
-        this.gender = gender;
-        this.age = age;
-        this.nrOfAccidents = nrOfAccidents;
-        this.yearsOfDriving = yearsOfDriving;
-        this.daysRented = daysRented;
-    }
-
+public class Client extends User {
     public String gender;
+
     public int age;
-    public int nrOfAccidents;
     public int yearsOfDriving;
 
+    public int nrOfAccidents;
     public int daysRented;
     public double rentalCoeff;
 
+    LocalDate birthDate;
+    LocalDate driversLicenseAcquiredDate;
+    public long balance;
 
     public ArrayList<RentedCarHistoryItem> currentRentals = new ArrayList<>();
     public ArrayList<RentedCarHistoryItem> historyRentals = new ArrayList<>();
 
 
-    public double getRentalCoeff() {
+    public Client(String userName, String firstName, String lastName, String password, String gender, String birthDate, String driversLicenseAcquiredDate, int nrOfAccidents, int daysRented, long balance) {
+        super(userName, firstName, lastName, password);
+        this.gender = gender;
+
+        this.nrOfAccidents = nrOfAccidents;
+        this.daysRented = daysRented;
+        this.balance = balance;
+        this.birthDate = LocalDate.parse(birthDate);
+        this.driversLicenseAcquiredDate = LocalDate.parse(driversLicenseAcquiredDate);
+    }
+
+    public void setCalculatedAge() {
+        int result = LocalDate.now().getYear() - birthDate.getYear();
+        age = result;
+    }
+
+    public void setCalculatedDrivingTime() {
+        int result = LocalDate.now().getYear() - driversLicenseAcquiredDate.getYear();
+        yearsOfDriving = result;
+    }
+
+
+    public void calculateRentalCoeff() {
         double baseCoeff = 1;
         double coeff = 0;
 
@@ -44,7 +61,6 @@ public class Customer extends User {
             baseCoeff = baseCoeff * 0.8;
         } else {
             System.out.println("no attack helicopters");
-            return -1;
         }
 
         //percentage increase additive. (increment)
@@ -71,10 +87,10 @@ public class Customer extends User {
         //complex algorithm
 
         coeff = accidentCoeff + ageCoeff + yearsOfDrivingCoeff + daysRentedCoeff;
-        double finalCoeff = baseCoeff + ((coeff/100) * baseCoeff);
+        double finalCoeff = baseCoeff + ((coeff / 100) * baseCoeff);
 
 
-        return finalCoeff;
+        rentalCoeff = finalCoeff;
     }
 
 
