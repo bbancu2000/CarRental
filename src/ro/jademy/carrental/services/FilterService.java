@@ -4,6 +4,8 @@ import ro.jademy.carrental.models.Client;
 import ro.jademy.carrental.models.Salesman;
 import ro.jademy.carrental.models.User;
 import ro.jademy.carrental.models.cars.Car;
+// import org.apache.commons.lang3.StringUtils;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +15,22 @@ public class FilterService {
     Scanner sc = new Scanner(System.in);
 
 
+    public List<Car> combinedSearch(User user, List<Car> carList, String input) {
+        List<Car> tempCarList = new ArrayList<>();
 
+        String[] inputList = input.split(" ");
+
+        for (String item : inputList) {
+
+
+
+
+        }
+
+
+
+        return null;
+    }
 
     public List<Car> searchByPrice(User user, List<Car> carList, int minPrice, int maxPrice) {
         List<Car> tempCarList = new ArrayList<>();

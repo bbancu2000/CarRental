@@ -3,7 +3,6 @@ package ro.jademy.carrental.services;
 import ro.jademy.carrental.models.RentedCarHistoryItem;
 import ro.jademy.carrental.models.cars.Car;
 
-import javax.print.PrintService;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
