@@ -252,6 +252,7 @@ public class Shop {
 
     public Car showSearchMenuOptions(List<Car> carList) {
         System.out.println("Select an action from below:");
+        System.out.println("0. Combined Search");
         System.out.println("1. Filter by price");
         System.out.println("2. Filter by make");
         System.out.println("3. Filter by model");
@@ -274,7 +275,14 @@ public class Shop {
         do {
             String choice = sc.nextLine().toUpperCase();
             switch (choice) {
-                //TODO
+
+                case "0":
+                    selectFilterOption(currentUser,"combined",carList);
+
+                    isValidChoice = true;
+                    break;
+
+
                 case "1":
                     //FILTER BY PRICE
                     selectFilterOption(currentUser, "price", carList);
@@ -371,6 +379,14 @@ public class Shop {
         Car currentCar = null;
 
         switch (filterType) {
+            case "combined":
+                System.out.println("Combined Search");
+                System.out.println("[Separator is ' ' (empty space)], and [Margin is '-' (for numbers)]");
+                String input = sc.nextLine();
+                carList = filterService.combinedSearch(currentUser, carList,input);
+                break;
+
+
             case "price":
                 //FILTER BY PRICE
                 System.out.println("Filter By Price");
